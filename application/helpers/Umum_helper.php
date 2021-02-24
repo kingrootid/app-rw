@@ -17,26 +17,34 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // ------------------------------------------------------------------------
 
 if (!function_exists('test')) {
-  /**
-   * Test
-   *
-   * This test helpers
-   *
-   * @param   ...
-   * @return  ...
-   */
-  function is_loggin()
-  {
-    $ci = &get_instance();
-    if (empty($ci->session->userdata('id'))) {
-      redirect('auth/login');
+    /**
+     * Test
+     *
+     * This test helpers
+     *
+     * @param   ...
+     * @return  ...
+     */
+    function is_loggin()
+    {
+        $ci = &get_instance();
+        if (empty($ci->session->userdata('id'))) {
+            redirect('auth/login');
+        }
     }
-  }
-  function userdetail($id)
-  {
-    $ci = &get_instance();
-    return $ci->db->get_where('users', ['id' => $id])->row_array();
-  }
+    function userdetail($id)
+    {
+        $ci = &get_instance();
+        return $ci->db->get_where('users', ['id' => $id])->row_array();
+    }
+    function is_admin()
+    {
+        $ci = &get_instance();
+        $cek = $ci->db->get_where('users', ['id' => $ci->session->userdata('id'), 'admin' => 1]);
+        if ($cek->num_rows() == 0) {
+            redirect();
+        }
+    }
 }
 
 // ------------------------------------------------------------------------

@@ -12,9 +12,6 @@
 
     <!-- CSS Libraries -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="<?php echo base_url(); ?>node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>node_modules/datatables.net-select-bs4/css/select.bootstrap4.min.css">
     <!-- Template CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/components.css">

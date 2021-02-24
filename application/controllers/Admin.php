@@ -21,22 +21,32 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Admin extends CI_Controller
 {
 
-  public function __construct()
-  {
-    parent::__construct();
-  }
+    public function __construct()
+    {
+        parent::__construct();
+        is_admin();
+        $this->load->model('Data_model', 'dmod');
+    }
 
-  public function users()
-  {
-    $data = array(
-      'title' => $this->config->item('title'),
-      'file' => 'admin/users',
-      'page' => 'Home Page',
-      'user' => userdetail($this->session->userdata('id'))
-    );
+    public function users()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'admin/users',
+            'page' => 'Management User',
+            'user' => userdetail($this->session->userdata('id'))
+        );
 
-    $this->load->view('template', $data);
-  }
+        $this->load->view('template', $data);
+    }
+    public function datausers()
+    {
+        if (empty($this->session->userdata('id'))) {
+            show_404();
+        } else {
+            echo json_decode($this->dmod->userdata());
+        }
+    }
 }
 
 
