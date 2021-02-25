@@ -455,7 +455,7 @@ $config['csrf_protection'] = TRUE;
 $config['csrf_token_name'] = 'rootw';
 $config['csrf_cookie_name'] = 'rootw_cookie';
 $config['csrf_expire'] = 7200;
-$config['csrf_regenerate'] = TRUE;
+$config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'] = array();
 
 /*

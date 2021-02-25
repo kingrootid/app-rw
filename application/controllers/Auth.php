@@ -49,17 +49,23 @@ class Auth extends CI_Controller
         );
         $aksi = $this->auth->login($data);
         if ($aksi['error'] == TRUE) {
-            $this->session->set_flashdata('message', "<div class='alert alert-danger'>
-            <div class='alert-title'>Gagal</div>
-            " . $aksi['message'] . "
-          </div>");
+            $this->session->set_flashdata('message', "
+            <div class='card bg-danger text-white shadow'>
+                <div class='card-body'>
+                    GAGAL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
             redirect('auth/login');
         } else {
             $this->session->set_userdata(array('id' => $aksi['id']));
-            $this->session->set_flashdata('message', "<div class='alert alert-danger'>
-            <div class='alert-title'>Berhasil</div>
-            " . $aksi['message'] . "
-          </div>");
+            $this->session->set_flashdata('message', "
+            <div class='card bg-success text-white shadow'>
+                <div class='card-body'>
+                    BERHASIL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
             redirect('');
         }
     }

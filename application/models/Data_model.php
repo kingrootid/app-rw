@@ -87,6 +87,19 @@ class Data_model extends CI_Model
             SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having)
         );
     }
+    public function duser($post)
+    {
+        if (empty($post['id'])) {
+            return array('error' => true, 'message' => 'Data tidak ditemukan');
+        } else {
+            $query = $this->db->get_where('users', ['id' => $post['id']]);
+            if ($query->num_rows() < 1) {
+                return array('error' => true, 'message' => "Data tidak ditemukan");
+            } else {
+                return $query->row_array();
+            }
+        }
+    }
 
     // ------------------------------------------------------------------------
 
