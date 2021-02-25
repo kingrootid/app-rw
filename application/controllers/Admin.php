@@ -110,6 +110,83 @@ class Admin extends CI_Controller
             show_404();
         }
     }
+    public function product()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'admin/product',
+            'page' => 'Management Product',
+            'user' => userdetail($this->session->userdata('id'))
+        );
+
+        $this->load->view('template', $data);
+    }
+    public function dataproduct()
+    {
+        if (empty($this->session->userdata('id'))) {
+            show_404();
+        } else {
+            echo json_decode($this->dmod->product());
+        }
+    }
+    public function doadd_product()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+            $data = array(
+                'nama' => $post['nama'],
+                'stock' => $post['stock'],
+            );
+            $aksi = $this->form->add_product($data);
+            header('Content-Type: application/json');
+            echo json_encode($aksi);
+        } else {
+            show_404();
+        }
+    }
+    public function dproduct()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+            $data = array('id' => $post['id']);
+            $aksi = $this->dmod->dproduct($data);
+            header('Content-Type: application/json');
+            echo json_encode($aksi);
+        } else {
+            show_404();
+        }
+    }
+    public function doedit_product()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+            $data = array(
+                'id' => $post['id'],
+                'nama' => $post['nama'],
+                'stock' => $post['stock'],
+                'aktif' => $post['aktif']
+            );
+            $aksi = $this->form->edit_product($data);
+            header('Content-Type: application/json');
+            echo json_encode($aksi);
+        } else {
+            show_404();
+        }
+    }
+    public function dohapus_product()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+            $data = array(
+                'id' => $post['id'],
+            );
+            $aksi = $this->form->hapus_product($data);
+            header('Content-Type: application/json');
+            echo json_encode($aksi);
+        } else {
+            show_404();
+        }
+    }
 }
 
 
