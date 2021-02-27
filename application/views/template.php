@@ -71,7 +71,6 @@
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="<?php echo base_url('admin/users'); ?>">User Management</a>
-                            <a class="collapse-item" href="<?php echo base_url('admin/achievement'); ?>">Achievement Management</a>
                             <a class="collapse-item" href="<?php echo base_url('admin/product'); ?>">Product Management</a>
                             <a class="collapse-item" href="<?php echo base_url('admin/rewards'); ?>">Rewards Management</a>
                         </div>
