@@ -34,7 +34,7 @@ class Users extends CI_Controller
             'file' => 'keys',
             'page' => 'Pengaturan API Keys',
             'user' => userdetail($this->session->userdata('id')),
-            'api_key' => $this->db->get_where('keys', ['user_id' => $this->session->userdata('id')])
+            'api_key' => cek_key($this->session->userdata('id'))
         );
 
         $this->load->view('template', $data);
@@ -47,6 +47,32 @@ class Users extends CI_Controller
                 'id' => $post['id']
             );
             $aksi = $this->form->generate_keys($data);
+            header('Content-Type: application/json');
+            echo json_encode($aksi);
+        }
+    }
+    public function password()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'password',
+            'page' => 'Pengaturan Password',
+            'user' => userdetail($this->session->userdata('id')),
+        );
+
+        $this->load->view('template', $data);
+    }
+    public function dopassword()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+            $data = array(
+                'id' => $post['id'],
+                'pass' => $post['pass'],
+                'npass' => $post['npass'],
+                'cnpass' => $post['cnpass']
+            );
+            $aksi = $this->form->changepass($data);
             header('Content-Type: application/json');
             echo json_encode($aksi);
         }

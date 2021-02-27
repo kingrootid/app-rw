@@ -293,14 +293,14 @@ class Form_model extends CI_Model
                     'user_id' => $post['id'],
                     'key' => $key,
                     'level' => 1,
-                    'date_created' => date('d-m-Y H:i:s')
+                    'date_created' => time()
                 );
                 $aksi = $this->db->insert('keys', $di);
             } else {
                 $di = array(
                     'key' => $key,
                     'level' => 1,
-                    'date_created' => date('d-m-Y H:i:s')
+                    'date_created' => time()
                 );
                 $aksi = $this->db->where('user_id', $post['id'])->update('keys', $di);
             }
@@ -308,6 +308,54 @@ class Form_model extends CI_Model
                 return array('error' => false, 'message' => 'Berhasil generate Keys', 'key' => $key);
             } else {
                 return array('error' => true, 'message' => 'Terjadi kesalahan saat generate key');
+            }
+        }
+    }
+    public function redeem($post)
+    {
+        if (empty($post['id']) || empty($post['user'])) {
+            return array('error' => true, 'message' => 'Terjadi kesalahan');
+        } else {
+            $cek_poin = $this->db->where('users_id', $post['user'])->get('poin');
+            $dpoin = $cek_poin->row_array();
+            $cek_rewards = $this->db->where('id', $post['id'])->get('rewards')->row_array();
+            if ($cek_poin->num_rows() == 0) {
+                return array('error' => true, 'message' => 'anda tidak memiliki poin / belum melakukan transaksi');
+            } else if ($dpoin['total'] < $cek_rewards['min']) {
+                return array('error' => true, 'message' => 'Sisa poin anda tidak menucukupi untuk transaksi ini');
+            } else {
+                $du = array(
+                    'total' => $dpoin['total'] - $cek_rewards['min']
+                );
+                $aksi = $this->db->where('users_id', $post['user'])->update('poin', $du);
+                if ($aksi) {
+                    return array('error' => false, 'message' => 'Berhasil menukarkan hadiah');
+                } else {
+                    return array('error' => true, 'message' => 'Gagal menukarkan hadiah');
+                }
+            }
+        }
+    }
+    public function changepass($post)
+    {
+        if (empty($post['pass']) || empty($post['npass']) || empty($post['cnpass'])) {
+            return array('error' => true, 'message' => 'Data tidak ada');
+        } else {
+            $cek = $this->db->get_where('users', ['id' => $post['id']])->row_array();
+            if ($post['npass'] !== $post['cnpass']) {
+                return array('error' => true, 'message' => 'Data Password baru tidak sesuai');
+            } else if (password_verify($post['pass'], $cek['password']) == FALSE) {
+                return array('error' => true, 'message' => 'Data password saat ini tidak sesuai');
+            } else {
+                $dup = array(
+                    'password' => password_hash($post['npass'], PASSWORD_DEFAULT)
+                );
+                $aksi = $this->db->where('id', $post['id'])->update('users', $dup);
+                if ($aksi) {
+                    return array('error' => false, 'message' => 'Password Berhasil di ganti');
+                } else {
+                    return array('error' => true, 'message' => 'Password gagal di ganti');
+                }
             }
         }
     }

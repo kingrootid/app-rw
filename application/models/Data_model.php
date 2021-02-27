@@ -222,6 +222,39 @@ class Data_model extends CI_Model
     {
         return $this->db->select('nama, min')->get('rewards')->result_array();
     }
+    public function history_transaction($id)
+    {
+        $table = 'transaction';
+        $primaryKey = 'id';
+        $columns = array(
+            array('db' => 'id', 'dt' => 0),
+            array('db' => 'product_id', 'dt' => 1, 'formatter' => function ($i) {
+                return namaproduct($i);
+            }),
+            array('db' => 'date', 'dt' => 2),
+        );
+
+        // SQL server connection information
+        $sql_details = array(
+            'user' => $this->db->username,
+            'pass' => $this->db->password,
+            'db'   => $this->db->database,
+            'host' => $this->db->hostname,
+            'charset' => 'utf8'
+        );
+
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * If you just want to use the basic configuration for DataTables with PHP
+     * server-side, there is no need to edit below this line.
+     */
+        $joinQuery = null;
+        $extraWhere = "users_id ='$id' ";
+        $groupBy = '';
+        $having = '';
+        echo json_encode(
+            SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having)
+        );
+    }
     // ------------------------------------------------------------------------
 
 }

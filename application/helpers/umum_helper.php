@@ -45,6 +45,28 @@ if (!function_exists('test')) {
             redirect();
         }
     }
+    function namaproduct($id)
+    {
+        $ci = &get_instance();
+        $data = $ci->db->get_where('product', ['id' => $id]);
+        $dd = $data->row_array();
+        if ($data->num_rows() == 0) {
+            return 'Product Telah dihapus';
+        } else {
+            return $dd['nama'];
+        }
+    }
+    function cek_key($id)
+    {
+        $ci = &get_instance();
+        $data = $ci->db->get_where('keys', ['user_id' => $id]);
+        $dd = $data->row_array();
+        if ($data->num_rows() < 1) {
+            return "api_key belum diset";
+        } else {
+            return $dd['key'];
+        }
+    }
 }
 
 // ------------------------------------------------------------------------

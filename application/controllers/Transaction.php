@@ -26,6 +26,7 @@ class Transaction extends CI_Controller
         parent::__construct();
         is_loggin();
         $this->load->model('Form_model', 'form');
+        $this->load->model('Data_model', 'dmod');
     }
 
     public function index()
@@ -70,6 +71,26 @@ class Transaction extends CI_Controller
                 </div>
             </div>");
             redirect('transaction/new');
+        }
+    }
+    public function history()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'transaction/history',
+            'page' => 'History Transaction',
+            'user' => userdetail($this->session->userdata('id')),
+            'product' => $this->db->where('is_active', 1)->order_by('id DESC')->get('product')->result_array()
+        );
+
+        $this->load->view('template', $data);
+    }
+    public function datahistory()
+    {
+        if (empty($this->session->userdata('id'))) {
+            show_404();
+        } else {
+            echo json_decode($this->dmod->history_transaction($this->session->userdata('id')));
         }
     }
 }

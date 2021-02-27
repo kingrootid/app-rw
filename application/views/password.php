@@ -6,21 +6,35 @@
             </div>
             <div class="card-body">
                 <input type="hidden" id="users_id" value="<?php echo $user['id']; ?>">
-                <input type="text" class="form-control mb-3" id="key" value="<?php echo $api_key; ?>" readonly>
-                <button id="reset" class="btn btn-info">Reset Key</button>
+                <div class="form-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="npass" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Password Konfirmasi</label>
+                    <input type="password" id="cnpass" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Password Saat Ini</label>
+                    <input type="password" id="pass" class="form-control">
+                </div>
+                <button id="change" class="btn btn-info">Ganti Password</button>
             </div>
         </div>
     </div>
 </div>
 <script>
-    $("#reset").click(function() {
+    $("#change").click(function() {
         $.ajax({
             type: "POST",
             data: {
                 id: $("#users_id").val(),
+                npass: $("#npass").val(),
+                cnpass: $("#cnpass").val(),
+                pass: $("#pass").val(),
                 <?= $this->security->get_csrf_token_name(); ?>: '<?= $this->security->get_csrf_hash(); ?>'
             },
-            url: "<?php echo base_url('users/generate'); ?>",
+            url: "<?php echo base_url('users/dopassword'); ?>",
             success: function(data) {
                 if (data.error == false) {
                     toastr.success(data.message);

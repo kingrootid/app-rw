@@ -106,7 +106,18 @@
                     <i class="fas fa-fw fa-trophy"></i>
                     <span>Achievement</span></a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#user" aria-expanded="true" aria-controls="user">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>User</span>
+                </a>
+                <div id="user" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="<?php echo base_url('users/keys'); ?>">API Keys</a>
+                        <a class="collapse-item" href="<?php echo base_url('users/password'); ?>">Pasword</a>
+                    </div>
+                </div>
+            </li>
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo base_url('auth/logout'); ?>">
