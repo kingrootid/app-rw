@@ -73,7 +73,7 @@
                             <a class="collapse-item" href="<?php echo base_url('admin/users'); ?>">User Management</a>
                             <a class="collapse-item" href="<?php echo base_url('admin/achievement'); ?>">Achievement Management</a>
                             <a class="collapse-item" href="<?php echo base_url('admin/product'); ?>">Product Management</a>
-                            <a class="collapse-item" href="<?php echo base_url('admin/transacation'); ?>">Transaction Management</a>
+                            <a class="collapse-item" href="<?php echo base_url('admin/rewards'); ?>">Rewards Management</a>
                         </div>
                     </div>
                 </li>
@@ -89,7 +89,7 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Transaction</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -102,7 +102,7 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('achievement/show'); ?>">
+                <a class="nav-link" href="<?php echo base_url('achievement/redeem'); ?>">
                     <i class="fas fa-fw fa-trophy"></i>
                     <span>Achievement</span></a>
             </li>

@@ -15,13 +15,9 @@
                         <select class="form-control js-example-basic-single" name="prod_id">
                             <option value="null">Silahkan Pilih Product</option>
                             <?php foreach ($product as $dprod) { ?>
-                                <option value="<?php echo $dprod['id']; ?>"><?php echo $dprod['nama']; ?> (Tersedia <i><?php echo $dprod['sisa_product']; ?></i>)</option>
+                                <option value="<?php echo $dprod['id']; ?>"><?php echo $dprod['nama']; ?></option>
                             <?php } ?>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="number" class="form-control" name="qty">
                     </div>
                 </div>
                 <div class="card-footer">

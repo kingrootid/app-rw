@@ -39,7 +39,7 @@ class Transaction extends CI_Controller
             'file' => 'transaction/new',
             'page' => 'New Transaction',
             'user' => userdetail($this->session->userdata('id')),
-            'product' => $this->db->where('is_active', 1)->order_by('sisa_product DESC')->get('product')->result_array()
+            'product' => $this->db->where('is_active', 1)->order_by('id DESC')->get('product')->result_array()
         );
 
         $this->load->view('template', $data);
@@ -49,8 +49,7 @@ class Transaction extends CI_Controller
         $post = $this->input->post();
         $data = array(
             'user_id' => $this->session->userdata('id'),
-            'prod_id' => $post['prod_id'],
-            'qty' => $post['qty']
+            'prod_id' => $post['prod_id']
         );
         $aksi = $this->form->donew($data);
         if ($aksi['error'] == TRUE) {

@@ -117,8 +117,7 @@ class Data_model extends CI_Model
                 }
                 return "<center><span class=\"badge badge-$label\">$txt</span></center>";
             }),
-            array('db' => 'sisa_product', 'dt' => 3),
-            array('db' => 'id',  'dt' => 4, 'formatter' => function ($i) {
+            array('db' => 'id',  'dt' => 3, 'formatter' => function ($i) {
                 return "
                 <a href=\"javascript:;\" onclick=\"edit(" . $i . ")\" data-toogle=\"modal\" data-target=\"#modal-default\" class=\"badge badge-warning modal-show\"><i class=\"fa fa-edit\"></i></a>
                 <a href=\"javascript:;\" onclick=\"hapus(" . $i . ")\" data-toogle=\"modal\" data-target=\"#modal-default\" class=\"badge badge-danger modal-show\"><i class=\"fa fa-trash\"></i></a>
@@ -159,6 +158,69 @@ class Data_model extends CI_Model
                 return $query->row_array();
             }
         }
+    }
+    public function rewards()
+    {
+        $table = 'rewards';
+        $primaryKey = 'id';
+        $columns = array(
+            array('db' => 'id', 'dt' => 0),
+            array('db' => 'nama', 'dt' => 1),
+            array('db' => 'foto', 'dt' => 2, 'formatter' => function ($i) {
+                return "<center><img src='" . base_url("upload/rewards/" . $i . "") . "' height='100' width='100'></center>";
+            }),
+            array('db' => 'min', 'dt' => 3),
+            array('db' => 'is_active', 'dt' => 4, 'formatter' => function ($i) {
+                if ($i == 0) {
+                    $label = "danger";
+                    $txt = "Tidak Aktif";
+                } else if ($i == 1) {
+                    $label = "primary";
+                    $txt = "Aktif";
+                }
+                return "<center><span class=\"badge badge-$label\">$txt</span></center>";
+            }),
+            array('db' => 'id',  'dt' => 5, 'formatter' => function ($i) {
+                return "
+                <a href='" . base_url("admin/edit_rewards/" . $i . "") . "'  class=\"badge badge-warning\"><i class=\"fa fa-edit\"></i></a>
+                <a href='" . base_url("admin/hapus_rewards/" . $i . "") . "'  class=\"badge badge-danger\"><i class=\"fa fa-trash\"></i></a>
+                ";
+            })
+        );
+
+        // SQL server connection information
+        $sql_details = array(
+            'user' => $this->db->username,
+            'pass' => $this->db->password,
+            'db'   => $this->db->database,
+            'host' => $this->db->hostname,
+            'charset' => 'utf8'
+        );
+
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * If you just want to use the basic configuration for DataTables with PHP
+     * server-side, there is no need to edit below this line.
+     */
+        $joinQuery = null;
+        $extraWhere = '';
+        $groupBy = '';
+        $having = '';
+        echo json_encode(
+            SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having)
+        );
+    }
+    public function cek_poin($post)
+    {
+        $this->db->select('keys.key, poin.total');
+        $this->db->from('keys');
+        $this->db->join('poin', 'poin.users_id = keys.user_id');
+        $this->db->where('keys.key', $post);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+    public function cek_rewards()
+    {
+        return $this->db->select('nama, min')->get('rewards')->result_array();
     }
     // ------------------------------------------------------------------------
 

@@ -114,12 +114,11 @@ class Form_model extends CI_Model
     }
     public function add_product($post)
     {
-        if (empty($post['nama']) || empty($post['stock'])) {
+        if (empty($post['nama'])) {
             return array('error' => true, 'message' => 'Data tidak ada');
         } else {
             $di = array(
                 'nama' => $post['nama'],
-                'sisa_product' => $post['stock'],
                 'is_active' => 1
             );
             $aksi = $this->db->insert('product', $di);
@@ -132,7 +131,7 @@ class Form_model extends CI_Model
     }
     public function edit_product($post)
     {
-        if (empty($post['nama']) || empty($post['stock'])) {
+        if (empty($post['nama'])) {
             return array('error' => true, 'message' => 'Data tidak ada');
         } else {
             $cek = $this->db->where('nama', $post['nama'])->where_not_in('id', $post['id'])->get('product');
@@ -146,7 +145,6 @@ class Form_model extends CI_Model
                 }
                 $dupdate = array(
                     'nama' => $post['nama'],
-                    'sisa_product' => $post['stock'],
                     'is_active' => $aktif
                 );
                 $aksi = $this->db->where('id', $post['id'])->update('product', $dupdate);
@@ -173,28 +171,143 @@ class Form_model extends CI_Model
     }
     public function donew($post)
     {
-        if (empty($post['prod_id']) || empty($post['qty'])) {
+        if (empty($post['prod_id'])) {
             return array('error' => true, 'message' => 'Data tidak sesuai, silahkan isi bidang yang dibutuhkan');
         } else {
-            $cek_prod = $this->db->get_where('product', ['id' => $post['id']])->row_array();
-            if ($post['qty'] > $cek_prod['sisa_product']) {
-                return array('error' => true, 'message' => 'Transaksi Melebihi Stock');
+            $point = 5;
+            $cek = $this->db->get_where('poin', ['users_id' => $post['user_id']]);
+            if ($cek->num_rows() == 0) {
+                $aksi = $this->db->insert('poin', ['users_id' => $post['user_id'], 'total' => $point]);
             } else {
-                $point = 5;
-                $tot_point = $post['qty'] * $point;
-                $cek = $this->db->get_where('poin', ['users_id' => $post['user_id']]);
-                if ($cek->num_rows() == 0) {
-                    $aksi = $this->db->insert('poin', ['users_id' => $post['user_id'], 'total' => $tot_point]);
+                $d_poin = $cek->row_array();
+                $aksi = $this->db->where('users_id', $post['user_id'])->update('poin', ['total' => $d_poin['total'] + $point]);
+            }
+            $di = array(
+                'users_id' => $post['user_id'],
+                'product_id' => $post['prod_id'],
+                'date' => date('d-m-Y')
+            );
+            $aksi = $this->db->insert('transaction', $di);
+            if ($aksi) {
+                return array('error' => false, 'message' => 'Transaksi Berhasil');
+            } else {
+                return array('error' => true, 'message' => 'Transaksi Gagal');
+            }
+        }
+    }
+    public function add_rewards($post)
+    {
+        if (empty($post['nama']) || empty($post['file']) || empty($post['min'])) {
+            return array('error' => true, 'message' => 'Data yang dibutuhkan tidak ada');
+        } else {
+            $config['upload_path']          = './upload/rewards/';
+            $config['allowed_types']        = 'gif|jpg|png';
+            $config['overwrite']            = true;
+            $config['max_size']             = 1024; // 1MB
+            // $config['max_width']            = 1024;
+            // $config['max_height']           = 768;
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('file')) {
+                return array('error' => true, 'message' => 'Gagal Upload Gambar');
+            } else {
+                $nama = $this->upload->data("file_name");
+            }
+            $di = array(
+                'nama' => $post['nama'],
+                'foto' => $nama,
+                'min' => $post['min'],
+                'is_active' => 1
+            );
+            $aksi = $this->db->insert('rewards', $di);
+            if ($aksi) {
+                return array('error' => false, 'message' => 'Data Rewards berhasil ditambahkan');
+            } else {
+                return array('error' => true, 'message' => 'Data Rewards gagal ditambahkan');
+            }
+        }
+    }
+    public function edit_rewards($post)
+    {
+        if (empty($post['nama']) || empty($post['min'])) {
+            return array('error' => true, 'message' => 'Data yang dibutuhkan tidak ada');
+        } else {
+            $cek = $this->db->get_where('rewards', ['id' => $post['id']])->row_array();
+            if (empty($post['file']['name'])) {
+                $nama = $cek['foto'];
+            } else {
+                $config['upload_path']          = './upload/rewards/';
+                $config['allowed_types']        = 'gif|jpg|png';
+                $config['overwrite']            = true;
+                $config['max_size']             = 1024; // 1MB
+                // $config['max_width']            = 1024;
+                // $config['max_height']           = 768;
+
+                $this->load->library('upload', $config);
+
+                if (!$this->upload->do_upload('file')) {
+                    return array('error' => true, 'message' => 'Gagal Upload Gambar');
                 } else {
-                    $d_poin = $cek->row_array();
-                    $aksi = $this->db->where('users_id', $post['user_id'])->update('poin', ['total' => $d_poin['total'] + $tot_point]);
+                    $nama = $this->upload->data("file_name");
                 }
-                $aksi_prod = $this->db->where('id', $cek_prod['id'])->update('product', ['sisa_product' => $cek_prod['sisa_product'] - $post['qty']]);
-                if ($aksi && $aksi_prod) {
-                    return array('error' => false, 'message' => 'Transaksi Berhasil');
-                } else {
-                    return array('error' => true, 'message' => 'Transaksi Gagal');
-                }
+            }
+            $di = array(
+                'nama' => $post['nama'],
+                'foto' => $nama,
+                'min' => $post['min'],
+                'is_active' => 1
+            );
+            $aksi = $this->db->where('id', $cek['id'])->update('rewards', $di);
+            if ($aksi) {
+                return array('error' => false, 'message' => 'Data Rewards berhasil diedit');
+            } else {
+                return array('error' => true, 'message' => 'Data Rewards gagal diedit');
+            }
+        }
+    }
+    public function hapus_rewards($post)
+    {
+        if (empty($post['id'])) {
+            return array('error' => true, 'message' => 'Data yang dibutuhkan tidak ada');
+        } else {
+            $cek = $this->db->get_where('rewards', ['id' => $post['id']])->row_array();
+            unlink("./upload/rewards/" . $cek['foto'] . "");
+            $aksi = $this->db->where('id', $cek['id'])->delete('rewards');
+            if ($aksi) {
+                return array('error' => false, 'message' => 'Data Rewards berhasil dihapus');
+            } else {
+                return array('error' => true, 'message' => 'Data Rewards gagal dihapus');
+            }
+        }
+    }
+    public function generate_keys($post)
+    {
+        if (empty($post['id'])) {
+            return array('error' => true, 'message' => 'Terjadi kesalahan');
+        } else {
+            $cek = $this->db->get_where('keys', ['user_id' => $post['id']]);
+            $key = implode('-', str_split(substr(strtolower(md5(microtime() . rand(1000, 9999))), 0, 30), 6));
+            if ($cek->num_rows() == 0) {
+                $di = array(
+                    'user_id' => $post['id'],
+                    'key' => $key,
+                    'level' => 1,
+                    'date_created' => date('d-m-Y H:i:s')
+                );
+                $aksi = $this->db->insert('keys', $di);
+            } else {
+                $di = array(
+                    'key' => $key,
+                    'level' => 1,
+                    'date_created' => date('d-m-Y H:i:s')
+                );
+                $aksi = $this->db->where('user_id', $post['id'])->update('keys', $di);
+            }
+            if ($aksi) {
+                return array('error' => false, 'message' => 'Berhasil generate Keys', 'key' => $key);
+            } else {
+                return array('error' => true, 'message' => 'Terjadi kesalahan saat generate key');
             }
         }
     }

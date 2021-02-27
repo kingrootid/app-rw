@@ -135,7 +135,6 @@ class Admin extends CI_Controller
             $post = $this->input->post();
             $data = array(
                 'nama' => $post['nama'],
-                'stock' => $post['stock'],
             );
             $aksi = $this->form->add_product($data);
             header('Content-Type: application/json');
@@ -163,7 +162,6 @@ class Admin extends CI_Controller
             $data = array(
                 'id' => $post['id'],
                 'nama' => $post['nama'],
-                'stock' => $post['stock'],
                 'aktif' => $post['aktif']
             );
             $aksi = $this->form->edit_product($data);
@@ -185,6 +183,157 @@ class Admin extends CI_Controller
             echo json_encode($aksi);
         } else {
             show_404();
+        }
+    }
+    public function rewards()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'admin/rewards/index',
+            'page' => 'Management Hadiah',
+            'user' => userdetail($this->session->userdata('id'))
+        );
+
+        $this->load->view('template', $data);
+    }
+    public function datarewards()
+    {
+        if (empty($this->session->userdata('id'))) {
+            show_404();
+        } else {
+            echo json_decode($this->dmod->rewards());
+        }
+    }
+    public function add_rewards()
+    {
+        $data = array(
+            'title' => $this->config->item('title'),
+            'file' => 'admin/rewards/add',
+            'page' => 'Tambah Hadiah',
+            'user' => userdetail($this->session->userdata('id'))
+        );
+
+        $this->load->view('template', $data);
+    }
+    public function doadd_rewards()
+    {
+        $post = $this->input->post();
+        $data = array(
+            'nama' => $post['nama'],
+            'file' => $_FILES['file'],
+            'min' => $post['min']
+        );
+        $aksi = $this->form->add_rewards($data);
+        if ($aksi['error'] == TRUE) {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-danger text-white shadow'>
+                <div class='card-body'>
+                    GAGAL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect('admin/add_rewards');
+        } else {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-success text-white shadow'>
+                <div class='card-body'>
+                    BERHASIL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect('admin/add_rewards');
+        }
+    }
+    public function edit_rewards()
+    {
+        if (empty($this->uri->segment(3))) {
+            redirect('admin/rewards');
+        } else {
+            $data = array(
+                'title' => $this->config->item('title'),
+                'file' => 'admin/rewards/edit',
+                'page' => 'Edit Hadiah',
+                'user' => userdetail($this->session->userdata('id')),
+                'rewards' => $this->db->get_where('rewards', ['id' => $this->uri->segment(3)])->row_array()
+            );
+
+            $this->load->view('template', $data);
+        }
+    }
+    public function doedit_rewards()
+    {
+        $post = $this->input->post();
+        $data = array(
+            'id' => $post['id'],
+            'nama' => $post['nama'],
+            'file' => $_FILES['file'],
+            'min' => $post['min']
+        );
+        $aksi = $this->form->edit_rewards($data);
+        if ($aksi['error'] == TRUE) {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-danger text-white shadow'>
+                <div class='card-body'>
+                    GAGAL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect("admin/edit_rewards/" . $data['id'] . "");
+        } else {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-success text-white shadow'>
+                <div class='card-body'>
+                    BERHASIL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect("admin/edit_rewards/" . $data['id'] . "");
+        }
+    }
+    public function hapus_rewards()
+    {
+        if (empty($this->uri->segment(3))) {
+            redirect('admin/rewards');
+        } else {
+            $data = array(
+                'title' => $this->config->item('title'),
+                'file' => 'admin/rewards/hapus',
+                'page' => 'Hapus Hadiah',
+                'user' => userdetail($this->session->userdata('id')),
+                'rewards' => $this->db->get_where('rewards', ['id' => $this->uri->segment(3)])->row_array()
+            );
+
+            $this->load->view('template', $data);
+        }
+    }
+    public function dohapus_rewards()
+    {
+        $post = $this->input->post();
+        $data = array(
+            'id' => $post['id'],
+            'nama' => $post['nama'],
+            'file' => $_FILES['file'],
+            'min' => $post['min']
+        );
+        $aksi = $this->form->hapus_rewards($data);
+        if ($aksi['error'] == TRUE) {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-danger text-white shadow'>
+                <div class='card-body'>
+                    GAGAL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect("admin/hapus_rewards/" . $data['id'] . "");
+        } else {
+            $this->session->set_flashdata('message', "
+            <div class='card bg-success text-white shadow'>
+                <div class='card-body'>
+                    BERHASIL
+                    <p>" . $aksi['message'] . "</p>
+                </div>
+            </div>");
+            redirect("admin/rewards");
         }
     }
 }

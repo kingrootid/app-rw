@@ -15,7 +15,6 @@
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>Product Active ?</th>
-                                <th>Sisa</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -24,7 +23,6 @@
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>Product Active ?</th>
-                                <th>Sisa</th>
                                 <th>Aksi</th>
                             </tr>
                         </tfoot>
@@ -54,10 +52,6 @@
                         <label>Nama</label>
                         <input type="text" class="form-control" id="nama">
                     </div>
-                    <div class="form-group">
-                        <label>Product Stock</label>
-                        <input type="text" class="form-control" id="stock">
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -83,10 +77,6 @@
                 <div class="form-group">
                     <label>Nama</label>
                     <input type="text" class="form-control" id="edit_nama">
-                </div>
-                <div class="form-group">
-                    <label>Product Stock</label>
-                    <input type="text" class="form-control" id="edit_stock">
                 </div>
                 <div class="form-group">
                     <label>Aktif ?</label>
@@ -121,10 +111,6 @@
                     <input type="text" class="form-control" id="hapus_nama" readonly>
                 </div>
                 <div class="form-group">
-                    <label>Product Stock</label>
-                    <input type="text" class="form-control" id="hapus_stock" readonly>
-                </div>
-                <div class="form-group">
                     <label>Aktif ?</label>
                     <select class="form-control" id="hapus_aktif" disabled>
                         <option value="tdk">Tidak</option>
@@ -154,7 +140,6 @@
             success: function(data) {
                 $("#edit_id").val(data.id);
                 $("#edit_nama").val(data.nama);
-                $("#edit_stock").val(data.sisa_product);
                 if (data.is_active == 0) {
                     var admin = "tdk";
                 } else {
@@ -182,7 +167,6 @@
             success: function(data) {
                 $("#hapus_id").val(data.id);
                 $("#hapus_nama").val(data.nama);
-                $("#hapus_stock").val(data.sisa_product);
                 if (data.is_active == 0) {
                     var admin = "tdk";
                 } else {
@@ -218,7 +202,6 @@
                 type: "POST",
                 data: {
                     nama: $("#nama").val(),
-                    stock: $("#stock").val(),
                     <?= $this->security->get_csrf_token_name(); ?>: '<?= $this->security->get_csrf_hash(); ?>'
                 },
                 url: "<?php echo base_url('admin/doadd_product'); ?>",
@@ -239,7 +222,6 @@
                 data: {
                     id: $("#edit_id").val(),
                     nama: $("#edit_nama").val(),
-                    stock: $("#edit_stock").val(),
                     aktif: $("#edit_aktif").val(),
                     <?= $this->security->get_csrf_token_name(); ?>: '<?= $this->security->get_csrf_hash(); ?>'
                 },
